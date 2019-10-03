@@ -23,7 +23,7 @@ public class IncrementorImpl implements Incrementor {
     public void incrementNumber() {
         number++;
         if (number == maximumValue) {
-            number = 0;
+            zeroing();
         }
     }
 
@@ -40,8 +40,15 @@ public class IncrementorImpl implements Incrementor {
      */
     @Override
     public void setMaximumValue(int maximumValue) throws WrongMaxNumberException {
-        if (maximumValue <=0) throw new WrongMaxNumberException(maximumValue);
+        if (maximumValue <= 0) throw new WrongMaxNumberException(maximumValue);
+        this.maximumValue = maximumValue;
 
-            this.maximumValue = maximumValue;
+        if (maximumValue <= number) {
+            zeroing();
+        }
+    }
+
+    private void zeroing() {
+        number = 0;
     }
 }

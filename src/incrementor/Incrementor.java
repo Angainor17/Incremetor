@@ -2,7 +2,7 @@ package incrementor;
 
 import exceptions.WrongMaxNumberException;
 
-interface Incrementor {
+public interface Incrementor {
 
     /**
      * Возвращает текущее число. В самом начале это ноль.
