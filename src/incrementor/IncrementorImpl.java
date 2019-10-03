@@ -2,9 +2,13 @@ package incrementor;
 
 import exceptions.WrongMaxNumberException;
 
+/**
+ * Сущность, которая позволяет инкрементировать целочисленное значение
+ * Даёт возможность устанавливать максимальное значение
+ */
 public class IncrementorImpl implements Incrementor {
 
-    private int number = 0;
+    private int value = 0;
     private int maximumValue = Integer.MAX_VALUE;
 
     /**
@@ -12,43 +16,61 @@ public class IncrementorImpl implements Incrementor {
      */
     @Override
     public int getNumber() {
-        return number;
+        return value;
     }
 
     /**
      * Увеличивает текущее число на один. После каждого вызова этого
-     * метода getNumber() будет возвращать число на один больше.
+     * метода {@link #getNumber()} будет возвращать число на один больше.
      */
     @Override
     public void incrementNumber() {
-        number++;
-        if (number == maximumValue) {
+        value++;
+
+        if (isValueOverflow()) {
             zeroing();
         }
     }
 
     /**
      * Устанавливает максимальное значение текущего числа.
-     * Когда при вызове incrementNumber() текущее число достигает
-     * этого значения, оно обнуляется, т.е. getNumber() начинает
-     * снова возвращать ноль, и снова один после следующего
-     * вызова incrementNumber() и так далее.
-     * По умолчанию максимум -- максимальное значение int.
-     * Если при смене максимального значения число резко начинает
-     * превышать максимальное значение, то число надо обнулить.
-     * Нельзя позволять установить тут число меньше нуля.
+     * Когда при вызове {@link #incrementNumber()} текущее число достигаетэтого значения, оно обнуляется
+     * <p>
+     * По умолчанию максимум - {@link Integer#MAX_VALUE}
+     * Если при смене максимального значения число начинает превышать максимальное
+     * значение, то число надо обнулить.
+     *
+     * @param maximumValue - Максимальное значение, должно быть больше или равно 0
      */
     @Override
     public void setMaximumValue(int maximumValue) throws WrongMaxNumberException {
         if (maximumValue <= 0) throw new WrongMaxNumberException(maximumValue);
+
         this.maximumValue = maximumValue;
 
-        if (maximumValue <= number) {
+        if (isValueOverMax()) {
             zeroing();
         }
     }
 
+    /**
+     * Значение {@link #value} превышает {@link #maximumValue}
+     */
+    private boolean isValueOverMax() {
+        return value >= maximumValue;
+    }
+
+    /**
+     * Значение {@link #value} достигло {@link #maximumValue}
+     */
+    private boolean isValueOverflow() {
+        return value == maximumValue;
+    }
+
+    /**
+     * Обнуление текущего значения {@link #value}
+     */
     private void zeroing() {
-        number = 0;
+        value = 0;
     }
 }
