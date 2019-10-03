@@ -4,7 +4,8 @@ import incrementor.IncrementorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Тестирование реализации сущности {@link Incrementor}
@@ -29,7 +30,7 @@ public class IncrementorTest {
         assertEquals(0, incrementor.getNumber());
         incrementor.setMaximumValue(1000);
 
-        for (long i = 0; i < iterationCount; i++) {
+        for (int i = 0; i < iterationCount; i++) {
             incrementor.incrementNumber();
         }
 
@@ -59,11 +60,13 @@ public class IncrementorTest {
      */
     @Test
     public void overMaxIncrements() {
-        final long iterations = 2L * Integer.MAX_VALUE;
-        for (long i = 0; i < iterations; i++) {
+        final int defaultMax = Integer.MAX_VALUE;
+        final long iterations = 3L * defaultMax;
+
+        for (long i = 1; i < iterations; i++) {
             incrementor.incrementNumber();
+            assertEquals(i % defaultMax, incrementor.getNumber());
         }
-        assertTrue(true);
     }
 
     /**
@@ -107,10 +110,25 @@ public class IncrementorTest {
      * @throws WrongMaxNumberException - Максимальное число задано не корректно
      */
     @Test(expected = WrongMaxNumberException.class)
-    public void wrongMaxValue() throws WrongMaxNumberException {
-        incrementor.setMaximumValue(0);
-        incrementor.setMaximumValue(2);
-
+    public void negativeMaxValue() throws WrongMaxNumberException {
         incrementor.setMaximumValue(-1);
+    }
+
+    /**
+     * Проверка maxNumber = 0.
+     * Ожидается, что будет возвращён 0 после инкрмента
+     *
+     * @throws WrongMaxNumberException - Максимальное число задано не корректно
+     */
+    @Test(expected = WrongMaxNumberException.class)
+    public void zeroMaxValue() throws WrongMaxNumberException {
+        incrementor.setMaximumValue(0);
+
+        int iterationCount = 111;
+
+        for (int i = 0; i < iterationCount; i++) {
+            incrementor.incrementNumber();
+            assertEquals(0, incrementor.getNumber());
+        }
     }
 }
